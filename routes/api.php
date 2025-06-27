@@ -19,3 +19,4 @@ Route::middleware('auth:sanctum')->get('/products/{product}', [ProductController
 Route::middleware('auth:sanctum')->post('/products', [ProductController::class, 'store']);
 Route::middleware('auth:sanctum')->put('/products/{product}', [ProductController::class, 'update']);
 Route::middleware('auth:sanctum')->delete('/products/{product}', [ProductController::class, 'destroy']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
