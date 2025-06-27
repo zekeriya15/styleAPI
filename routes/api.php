@@ -14,9 +14,11 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/products', [ProductController::class, 'index']);
-Route::middleware('auth:sanctum')->get('/products/{product}', [ProductController::class, 'show']);
-Route::middleware('auth:sanctum')->post('/products', [ProductController::class, 'store']);
-Route::middleware('auth:sanctum')->put('/products/{product}', [ProductController::class, 'update']);
-Route::middleware('auth:sanctum')->delete('/products/{product}', [ProductController::class, 'destroy']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});

@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:create,' . Product::class)->only('store');
+        $this->middleware('can:update,product')->only('update');
+        $this->middleware('can:delete,product')->only('destroy');
+    }
+
+
     public function index () {
         $products = Product::all();
 
