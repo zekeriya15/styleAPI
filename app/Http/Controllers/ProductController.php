@@ -19,6 +19,7 @@ class ProductController extends Controller
     }
 
     public function show (Product $product) {
+        $product->image_url = Storage::url($product->image);
 
         return response()->json($product);
     }
@@ -39,5 +40,38 @@ class ProductController extends Controller
         $product = Product::create($validatedProduct);
 
         return response()->json(['message' => 'Product added successfully', 'id' => $product->id]);
+    }
+
+    public function update (Request $request, Product $product) {
+        $validatedProduct = $request->validate([
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'name' => 'required|string|max:255',
+            'size' => 'required|string|max:10',
+            'description' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0'
+        ]);
+
+        // keep old image if not updating
+        $imagePath = $product->image;
+
+        if ($request->hasFile('image')) {
+            // delete old image
+            Storage::disk('public')->delete($product->image);
+            // store new image
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $validatedProduct['image'] = $imagePath;
+        $product->update($validatedProduct);
+
+        return response()->json(['message' => 'Product updates successfully'], 200);
+    }
+
+    public function destroy (Product $product) {
+        Storage::disk('public')->delete($product->image);
+        $product->delete();
+
+        return response()->json(['message' => 'Product deleted successfully']);
     }
 }
